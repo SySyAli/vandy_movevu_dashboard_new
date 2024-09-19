@@ -49,9 +49,12 @@ const Dashboard = () => {
       <h1>Ridership Dashboard</h1>
       <div>
         <Bar data={chartData} />
+      
       </div>
     </div>
   );
 };
+
+// TODO: have it be a stacked barchart and add a datepicker to select the range of dates to display
 
 export default Dashboard;

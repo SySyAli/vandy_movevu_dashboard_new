@@ -2,7 +2,7 @@
 
 .csv
 /public/data/historical/*
-
+/public/data/quickticket/*
 # dependencies
 /node_modules
 /.pnp
