@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model QuickticketData {
+  id                    Int    @id @default(autoincrement())
+  cardofficeCardNumber  BigInt @map("cardoffice_card_number")
+  campusId              String @map("campus_id")
+  rideDate              DateTime @map("ride_date") // Stores only date but keeps consistency with DateTime type
+  route                 Int
+  monthYear             String @map("month_year")
+
+  @@map("quickticket_data")
+}
+
+model HistoricalCardData {
+  id                    Int    @id @default(autoincrement())
+  cardofficeCardNumber  String @map("cardoffice_card_number")
+  cardIdStatus          String @map("card_id_status")
+  rideDate              DateTime @map("ride_date") // TIMESTAMP WITH TIME ZONE as DateTime
+  monthYear             String @map("month_year")
+  hour                  Int
+  route                 Int
+  employeeOrStudent     String @map("employee_or_student")
+  campusId              String @map("campus_id")
+
+  @@map("historical_card_data")
+}

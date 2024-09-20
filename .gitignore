@@ -3,6 +3,9 @@
 .csv
 /public/data/historical/*
 /public/data/quickticket/*
+
+.env
+
 # dependencies
 /node_modules
 /.pnp
