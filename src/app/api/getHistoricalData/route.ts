@@ -1,11 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createReadStream } from "fs";
 import path from "path";
 import csv from "csv-parser";
-
-// TODO: have it be a stacked barchart and add a datepicker to select the range of dates to display
-// TODO: 1. add quickticket data to the backend, then add a stacked barchart to the frontend, then add date picker
-// TODO: Figure out what graphics to put up and design as well?
 
 interface Options {
 	CheckUnknown?: boolean;
@@ -34,12 +30,7 @@ async function fetchDataFromCSV(
 			.pipe(csv())
 			.on("data", (row) => {
 				const monthYear = row.MONTH_YEAR;
-				if (options.CheckUnknown) {
-					const cardIdStatus = row.CARD_ID_STATUS;
-					if (cardIdStatus !== "UNKNOWN") {
-						monthYearCounts[monthYear] = (monthYearCounts[monthYear] || 0) + 1;
-					}
-				} else {
+				if (!options.CheckUnknown || row.CARD_ID_STATUS !== "UNKNOWN") {
 					monthYearCounts[monthYear] = (monthYearCounts[monthYear] || 0) + 1;
 				}
 			})
@@ -47,13 +38,16 @@ async function fetchDataFromCSV(
 				resolve(monthYearCounts);
 			})
 			.on("error", (error) => {
-				console.error("Error reading CSV file:", error);
-				reject(error);
+				reject(new Error(`Error reading CSV file: ${error.message}`));
 			});
 	});
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+	const url = new URL(request.url);
+	const startDate = url.searchParams.get("start") || "2016-12-25";
+	const endDate = url.searchParams.get("end") || "2024-08-31";
+
 	try {
 		const historicalDataPath = path.join(
 			process.cwd(),
@@ -64,19 +58,16 @@ export async function GET() {
 			"public/data/quickticket/quickticket_data.csv"
 		);
 
-		const historicalData = await fetchDataFromCSV(historicalDataPath, {
-			CheckUnknown: true,
-		});
-		const quickticketData = await fetchDataFromCSV(quickticketDataPath, {
-			CheckUnknown: false,
-		});
+		const [historicalData, quickticketData] = await Promise.all([
+			fetchDataFromCSV(historicalDataPath, { CheckUnknown: true }),
+			fetchDataFromCSV(quickticketDataPath, { CheckUnknown: false }),
+		]);
 
-		const combinedDataKeys = Object.keys({
-			...historicalData,
-			...quickticketData,
-		}).sort((a, b) => new Date(a).getTime() - new Date(b).getTime()); // Sort keys chronologically
+		const filteredKeys = Object.keys({ ...historicalData, ...quickticketData })
+			.filter((key) => key >= startDate && key <= endDate)
+			.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
-		const combinedData: CombinedData = combinedDataKeys.reduce<CombinedData>((acc, key) => {
+		const combinedData: CombinedData = filteredKeys.reduce((acc, key) => {
 			acc[key] = {
 				historical: historicalData[key] || 0,
 				quickticket: quickticketData[key] || 0,
@@ -84,9 +75,11 @@ export async function GET() {
 			return acc;
 		}, {} as CombinedData);
 
-		return NextResponse.json(combinedData);
+		return new NextResponse(JSON.stringify(combinedData), { status: 200 });
 	} catch (error) {
-		console.error("Error combining data:", error);
-		return NextResponse.error();
+		console.error("Error processing data:", error);
+		return new NextResponse(JSON.stringify({ error: (error as Error).message }), {
+			status: 500,
+		});
 	}
 }
