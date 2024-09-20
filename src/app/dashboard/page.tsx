@@ -55,6 +55,5 @@ const Dashboard = () => {
   );
 };
 
-// TODO: have it be a stacked barchart and add a datepicker to select the range of dates to display
 
 export default Dashboard;
