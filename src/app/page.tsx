@@ -2,7 +2,7 @@ import Image from "next/image";
 
 // TODO: cache the data and make a basic ui
 // TODO: Figure out what graphics to put up and design as well?
-
+// TODO: cache the data in the backend and seperate the api resuts
 
 export default function Home() {
   return (
