@@ -1,0 +1,11 @@
+.datepicker_custom .react-datepicker__input-container input {
+    padding: 0.5rem;
+    border: 2px solid #4a5568;  /* Border color */
+    borderRadius: 0.375rem; /* Tailwind's rounded-md */
+    outline: none;
+  }
+  
+  .datepicker_custom .react-datepicker {
+    border-color: #cbd5e0; /* Light gray border */
+  }
+  

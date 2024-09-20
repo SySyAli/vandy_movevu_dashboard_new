@@ -5,6 +5,8 @@ import { Chart, registerables } from "chart.js";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import "./DatePickerStyles.css";
+
 Chart.register(...registerables);
 
 const Dashboard = () => {
@@ -15,7 +17,7 @@ const Dashboard = () => {
 
 	const [rideData, setRideData] = useState<Record<string, RideData>>({});
 	const [loading, setLoading] = useState(true);
-	const [startDate, setStartDate] = useState(new Date("2016-12-25"));
+	const [startDate, setStartDate] = useState(new Date("2017-01-01"));
 	const [endDate, setEndDate] = useState(new Date("2024-08-31"));
 
 	useEffect(() => {
@@ -33,7 +35,7 @@ const Dashboard = () => {
 	}, [startDate, endDate]);
 
 	if (loading) {
-		return <p>Loading...</p>;
+		return <p className="text-center mt-5">Loading...</p>;
 	}
 
 	const chartData = {
@@ -53,23 +55,33 @@ const Dashboard = () => {
 	};
 
 	return (
-		<div>
-			<h1>Ridership Dashboard</h1>
-			<DatePicker
-				selected={startDate}
-				onChange={(date) => date && setStartDate(date)}
-				selectsStart
-				startDate={startDate}
-				endDate={endDate}
-			/>
-			<DatePicker
-				selected={endDate}
-				onChange={(date) => date && setEndDate(date)}
-				selectsEnd
-				startDate={startDate}
-				endDate={endDate}
-				minDate={startDate}
-			/>
+		<div className="container mx-auto px-4">
+			<h1 className="text-xl font-bold text-center my-4">
+				Ridership Dashboard
+			</h1>
+			<div className="flex flex-col md:flex-row justify-center items-end space-x-2 mb-4">
+				<DatePicker
+					className="datepicker_custom" // Tailwind class for customization
+					selected={startDate}
+					onChange={(date) => date && setStartDate(date)}
+					selectsStart
+					startDate={startDate}
+					endDate={endDate}
+					dateFormat="MM/yyyy"
+          showMonthYearPicker
+				/>
+				<DatePicker
+					className="datepicker_custom" // Tailwind class for customization
+					selected={endDate}
+					onChange={(date) => date && setEndDate(date)}
+					selectsEnd
+					startDate={startDate}
+					endDate={endDate}
+					minDate={startDate}
+					dateFormat="MM/yyyy"
+          showMonthYearPicker
+				/>
+			</div>
 			<div>
 				<Bar
 					data={chartData}
