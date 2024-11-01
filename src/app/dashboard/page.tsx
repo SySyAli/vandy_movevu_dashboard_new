@@ -21,11 +21,12 @@ const Dashboard = () => {
 	const [endDate, setEndDate] = useState(new Date("2024-08-31"));
 
 	useEffect(() => {
-		setLoading(true); // Ensure loading is true when fetching
+		setLoading(true);
 		const fetchData = async () => {
-			const res = await fetch(
-				`/api/getHistoricalData?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
-			);
+			const formattedStartDate = startDate.toISOString();
+			const formattedEndDate = endDate.toISOString();
+			const url = `/api/getSwipesPerMonth?start=${formattedStartDate}&end=${formattedEndDate}`;
+			const res = await fetch(url);
 			const data = await res.json();
 			setRideData(data);
 			setLoading(false);
@@ -68,7 +69,7 @@ const Dashboard = () => {
 					startDate={startDate}
 					endDate={endDate}
 					dateFormat="MM/yyyy"
-          showMonthYearPicker
+					showMonthYearPicker
 				/>
 				<DatePicker
 					className="datepicker_custom" // Tailwind class for customization
@@ -79,7 +80,7 @@ const Dashboard = () => {
 					endDate={endDate}
 					minDate={startDate}
 					dateFormat="MM/yyyy"
-          showMonthYearPicker
+					showMonthYearPicker
 				/>
 			</div>
 			<div>
