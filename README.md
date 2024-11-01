@@ -1,57 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vanderbilt MoveVU Ridership Dashboard
 
-## Getting Started
+<p align='center'>
+  <img src='https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white'>
+  <img src='https://img.shields.io/badge/TypeScript-blue?style=for-the-badge&logo=typescript&logoColor=white'>
+  <img src='https://img.shields.io/badge/Prisma-green?style=for-the-badge&logo=prisma&logoColor=white'>
+  <img src='https://img.shields.io/badge/Chart.js-orange?style=for-the-badge&logo=chart.js&logoColor=white'>
+  <img src='https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white'>
+</p>
 
-First, run the development server:
+## Overview
+The Vanderbilt MoveVU Ridership Dashboard is a web application designed to visualize Nashville's bus ridership data, providing insights into usage trends across various routes. With a modern and interactive UI, the dashboard enables users to explore ridership data filtered by time periods and rider demographics.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<!-- ## Preview
+![Dashboard Preview](assets/vanderbilt_ridership_dashboard.png) -->
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Interactive Data Filtering**: Filter ridership data by custom date ranges and dynamically switch between different visualization tabs.
+- **Top Routes Visualization**: View ridership trends for the top routes over time.
+- **Unique Users Analysis**: Visualize monthly unique user counts for both historical and QuickTicket ridership.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How It Works
+The dashboard is built using a combination of technologies:
 
-## Learn More
+- **Next.js** for the frontend and server-side rendering.
+- **TypeScript** for type safety and enhanced development experience.
+- **Prisma ORM** to handle database access and manipulate PostgreSQL data.
+- **Chart.js** for creating interactive and visually appealing data visualizations.
+- **PostgreSQL** for creating interactive and visually appealing data visualizations.
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
+To set up and run this project locally, follow these steps:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-
-Code for creating SQL Tables:
-CREATE TABLE quickticket_data (
-    id SERIAL PRIMARY KEY,
-    cardoffice_card_number NUMERIC(20,0),
-    campus_id VARCHAR(255),
-    ride_date DATE,
-    route INT,
-    month_year VARCHAR(10)
-);CREATE TABLE historical_card_data (
-    id SERIAL PRIMARY KEY,
-    cardoffice_card_number VARCHAR(255),
-    card_id_status VARCHAR(50),
-    ride_date TIMESTAMP WITH TIME ZONE,
-    month_year VARCHAR(10),
-    hour INT,
-    route INT,
-    employee_or_student VARCHAR(50),
-    campus_id VARCHAR(255)
-);
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/SySyAli/vandy_movevu_dashboard_new.git
+2. **Navigate to the project directory:**
+    ```bash
+    cd vanderbilt_movevu
+3. **Install dependencies:**
+    ```bash
+    npm install
+4. Set up the database:
+    - Ensure PostgreSQL is running locally or through a cloud service.
+    - Update the Prisma `.env` file with your database connection string.
+5. **Run Prisma migrations:**
+    ```bash
+    npx prisma migrate dev
+6. **Start the development server:**
+    ```bash
+    npm run dev
+The app will be running on `http://localhost:3000`.

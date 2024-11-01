@@ -1,6 +1,8 @@
 // TODO: cache the data and make a basic ui
 // TODO: Figure out what graphics to put up and design as well?
 // TODO: cache the data in the backend and seperate the api resuts
+// TODO: Figure out what to do with this website
+// TODO: Add Auth for Vanderbilt
 
 export default function Home() {
 	return (
