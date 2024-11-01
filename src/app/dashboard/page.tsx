@@ -18,7 +18,7 @@ const Dashboard = () => {
 	const [rideData, setRideData] = useState<Record<string, RideData>>({});
 	const [loading, setLoading] = useState(true);
 	const [startDate, setStartDate] = useState(new Date("2017-01-01"));
-	const [endDate, setEndDate] = useState(new Date("2024-08-31"));
+	const [endDate, setEndDate] = useState(new Date("2024-09-30"));
 
 	useEffect(() => {
 		setLoading(true);
