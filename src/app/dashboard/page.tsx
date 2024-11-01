@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import Tabs from "../components/Tabs";
 import RideDataChart from "../components/RideDataChart";
+import UniqueUsersChart from "../components/UniqueUsersChart";
+import TopRoutesChart from "../components/TopRoutesChart";
 
 const Dashboard = () => {
 	const [activeTab, setActiveTab] = useState("rideData");
@@ -12,6 +14,10 @@ const Dashboard = () => {
 		switch (activeTab) {
 			case "rideData":
 				return <RideDataChart />;
+			case "uniqueUsers":
+				return <UniqueUsersChart />;
+			case "topRoutes":
+				return <TopRoutesChart />;
 			default:
 				return null;
 		}
