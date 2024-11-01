@@ -3,6 +3,7 @@
 .csv
 /public/data/historical/*
 /public/data/quickticket/*
+notebooks/*
 
 .env
 
@@ -113,3 +114,4 @@ fastlane/screenshots
 Packages/
 PostgreSQL.xcodeproj/
 .DS_Store
+.vercel

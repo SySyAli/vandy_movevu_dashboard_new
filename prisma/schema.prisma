@@ -7,10 +7,14 @@
 generator client {
   provider = "prisma-client-js"
 }
-
+ 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // Uses connection pooling
+  url = env("POSTGRES_PRISMA_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model QuickticketData {
@@ -32,8 +36,8 @@ model HistoricalCardData {
   monthYear             String @map("month_year")
   hour                  Int
   route                 Int
-  employeeOrStudent     String @map("employee_or_student")
-  campusId              String @map("campus_id")
+  employeeOrStudent     String? @map("employee_or_student")
+  campusId              String? @map("campus_id")
 
   @@map("historical_card_data")
 }
