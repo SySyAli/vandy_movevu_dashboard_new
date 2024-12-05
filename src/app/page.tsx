@@ -3,6 +3,7 @@
 // TODO: cache the data in the backend and seperate the api resuts
 // TODO: Figure out what to do with this website
 // TODO: Add Auth for Vanderbilt
+// TODO: Fix Loading
 
 export default function Home() {
 	return (

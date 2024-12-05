@@ -35,7 +35,7 @@ const RideDataChart = () => {
 
 		fetchData();
 	}, [startDate, endDate]);
-
+	// TODO: FIX THIS
 	if (loading) {
 		return <p className="text-center mt-5">Loading...</p>;
 	}
@@ -44,7 +44,7 @@ const RideDataChart = () => {
 		labels: Object.keys(rideData).sort(),
 		datasets: [
 			{
-				label: "Historical Rides",
+				label: "Commodore Card Rides",
 				data: Object.values(rideData).map((data) => data.historical),
 				backgroundColor: "rgba(207,174,112, 0.8)",
 			},

@@ -38,7 +38,7 @@ const UniqueUsersChart = () => {
 		labels: uniqueUsersData.map((item) => item.monthYear),
 		datasets: [
 			{
-				label: "Historical Unique Users",
+				label: "Commodore Card Unique Users",
 				data: uniqueUsersData.map((item) => item.historical),
 				backgroundColor: "rgba(75, 192, 192, 0.8)",
 			},
