@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-
-function getMonthYear(date: string): string {
-  const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-}
+import { getMonthYear } from "../../../../lib/util";
 
 // Swipes Per Month API
 export async function GET(req: NextRequest) {
