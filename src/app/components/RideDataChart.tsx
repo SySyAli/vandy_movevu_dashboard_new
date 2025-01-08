@@ -18,15 +18,15 @@ const RideDataChart = () => {
 
 	const [rideData, setRideData] = useState<Record<string, RideData>>({});
 	const [loading, setLoading] = useState(true);
-	const [startDate, setStartDate] = useState(new Date("2017-01-01"));
-	const [endDate, setEndDate] = useState(new Date("2024-09-30"));
+	const [startDate, setStartDate] = useState(new Date("2016-12-31"));
+	const [endDate, setEndDate] = useState(new Date("2024-12-30"));
 
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
 			const formattedStartDate = startDate.toISOString();
 			const formattedEndDate = endDate.toISOString();
-			const url = `/api/getSwipesPerMonth?start=${formattedStartDate}&end=${formattedEndDate}`;
+			const url = `/api/monthlySwipes?start=${formattedStartDate}&end=${formattedEndDate}`;
 			const res = await fetch(url);
 			const data = await res.json();
 			setRideData(data);
