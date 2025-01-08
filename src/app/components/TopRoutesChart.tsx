@@ -11,8 +11,8 @@ const TopRoutesChart = () => {
 		{ route: string; monthlyData: { monthYear: string; count: number }[] }[]
 	>([]);
 	const [loading, setLoading] = useState(true);
-	const [startDate, setStartDate] = useState(new Date("2017-01-01"));
-	const [endDate, setEndDate] = useState(new Date("2024-09-30"));
+	const [startDate, setStartDate] = useState(new Date("2016-12-31"));
+	const [endDate, setEndDate] = useState(new Date("2024-12-30"));
 
 	const colorPalette = [
 		"rgba(75, 192, 192, 1)", // Teal
