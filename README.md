@@ -30,24 +30,37 @@ The dashboard is built using a combination of technologies:
 - **PostgreSQL** for creating interactive and visually appealing data visualizations.
 
 ## Installation
-To set up and run this project locally, follow these steps:
 
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/SySyAli/vandy_movevu_dashboard_new.git
+   ```
+
 2. **Navigate to the project directory:**
-    ```bash
-    cd vanderbilt_movevu
+   ```bash
+   cd vanderbilt_movevu
+   ```
+
 3. **Install dependencies:**
-    ```bash
-    npm install
-4. Set up the database:
-    - Ensure PostgreSQL is running locally or through a cloud service.
-    - Update the Prisma `.env` file with your database connection string.
-5. **Run Prisma migrations:**
-    ```bash
-    npx prisma migrate dev
+   ```bash
+   npm install
+   ```
+
+4. **Configure environment variables:**
+   Create a `.env` file in the root directory with:
+   ```env
+   POSTGRES_PRISMA_URL="your-postgres-connection-string"
+   POSTGRES_URL_NON_POOLING="your-postgres-direct-connection-string"
+   ```
+
+5. **Run database migrations:**
+   ```bash
+   npx prisma migrate dev
+   ```
+
 6. **Start the development server:**
-    ```bash
-    npm run dev
+   ```bash
+   npm run dev
+   ```
+
 The app will be running on `http://localhost:3000`.
