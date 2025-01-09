@@ -18,7 +18,7 @@ export default function Home() {
 					<div className="mt-8 max-w-md mx-auto sm:flex sm:justify-center md:mt-8 space-x-4">
 						<Link
 							href="/dashboard"
-							className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#CFB991] hover:bg-[#B5985A] transition-colors duration-300 shadow-md"
+							className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#CFB991] hover:bg-[#B5985A] transition-colors duration-300 shadow-md font-sans"
 						>
 							Go to Dashboard
 						</Link>

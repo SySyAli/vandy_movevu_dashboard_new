@@ -7,7 +7,7 @@ const config: Config = {
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-		"./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+		"./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
 	],
 	theme: {
 		extend: {
@@ -51,6 +51,19 @@ const config: Config = {
 					"3": "hsl(var(--chart-3))",
 					"4": "hsl(var(--chart-4))",
 					"5": "hsl(var(--chart-5))",
+				},
+				vanderbilt: {
+					gold: "#CFB991",
+					darkgold: "#B5985A",
+					black: "#000000",
+					white: "#FFFFFF",
+					gray: {
+						100: "#F5F5F5",
+						200: "#EEEEEE",
+						300: "#E0E0E0",
+						400: "#BDBDBD",
+						500: "#9E9E9E",
+					},
 				},
 			},
 			borderRadius: {
