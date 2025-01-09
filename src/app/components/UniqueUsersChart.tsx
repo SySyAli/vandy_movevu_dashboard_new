@@ -20,7 +20,7 @@ const UniqueUsersChart = () => {
 		const fetchData = async () => {
 			const formattedStartDate = startDate.toISOString();
 			const formattedEndDate = endDate.toISOString();
-			const url = `/api/getUniqueUsersPerMonth?start=${formattedStartDate}&end=${formattedEndDate}`;
+			const url = `/api/uniqueUsers?start=${formattedStartDate}&end=${formattedEndDate}`;
 			const res = await fetch(url);
 			const data = await res.json();
 			setUniqueUsersData(data);

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
@@ -14,12 +16,14 @@ const TopRoutesChart = () => {
 	const [startDate, setStartDate] = useState(new Date("2016-12-31"));
 	const [endDate, setEndDate] = useState(new Date("2024-12-30"));
 
+	// Define color palette for routes
 	const colorPalette = [
 		"rgba(75, 192, 192, 1)", // Teal
 		"rgba(153, 102, 255, 1)", // Purple
 		"rgba(255, 159, 64, 1)", // Orange
 		"rgba(255, 99, 132, 1)", // Red
 		"rgba(54, 162, 235, 1)", // Blue
+		"rgba(255, 205, 86, 1)", // Yellow
 	];
 
 	useEffect(() => {
@@ -27,100 +31,63 @@ const TopRoutesChart = () => {
 		const fetchData = async () => {
 			const formattedStartDate = startDate.toISOString();
 			const formattedEndDate = endDate.toISOString();
-			const url = `/api/getTop5RoutesPerMonth?start=${formattedStartDate}&end=${formattedEndDate}`;
+			const url = `/api/topRoutes?start=${formattedStartDate}&end=${formattedEndDate}`;
 			const res = await fetch(url);
 			const data = await res.json();
 
-			// Combine historical and quickticket data by route and monthYear
-			const combinedData: { [key: string]: { [key: string]: number } } = {};
+			// Create a combined map of all monthYears
+			const allMonths = new Set<string>();
+			data.forEach((route: any) => {
+				route.monthlyData.forEach((entry: any) => allMonths.add(entry.monthYear));
+			});
+			const sortedMonths = Array.from(allMonths).sort();
 
-			data.historical.forEach(
-				(routeData: {
-					route: string;
-					monthlyData: { monthYear: string; count: number }[];
-				}) => {
-					routeData.monthlyData.forEach(({ monthYear, count }) => {
-						if (!combinedData[routeData.route])
-							combinedData[routeData.route] = {};
-						combinedData[routeData.route][monthYear] =
-							(combinedData[routeData.route][monthYear] || 0) + count;
-					});
-				}
-			);
+			// Fill missing months with zero counts
+			const filledData = data.map((route: any) => {
+				const monthlyDataMap = new Map(
+					route.monthlyData.map((entry: any) => [entry.monthYear, entry.count])
+				);
+				const filledMonthlyData = sortedMonths.map((month) => ({
+					monthYear: month,
+					count: monthlyDataMap.get(month) || 0,
+				}));
+				return { route: route.route, monthlyData: filledMonthlyData };
+			});
 
-			data.quickticket.forEach(
-				(routeData: {
-					route: string;
-					monthlyData: { monthYear: string; count: number }[];
-				}) => {
-					routeData.monthlyData.forEach(({ monthYear, count }) => {
-						if (!combinedData[routeData.route])
-							combinedData[routeData.route] = {};
-						combinedData[routeData.route][monthYear] =
-							(combinedData[routeData.route][monthYear] || 0) + count;
-					});
-				}
-			);
-
-			// Calculate total ridership per route and sort to get top 5 routes
-			const routeTotals = Object.keys(combinedData).map((route) => ({
-				route,
-				totalCount: Object.values(combinedData[route]).reduce(
-					(sum, count) => sum + count,
-					0
-				),
-			}));
-
-			const topRoutes = routeTotals
-				.sort((a, b) => b.totalCount - a.totalCount)
-				.slice(0, 5)
-				.map((item) => item.route);
-
-			// Format data for Chart.js
-			const topRoutesData = topRoutes.map((route) => ({
-				route,
-				monthlyData: Object.keys(combinedData[route])
-					.map((monthYear) => ({
-						monthYear,
-						count: combinedData[route][monthYear],
-					}))
-					.sort((a, b) => a.monthYear.localeCompare(b.monthYear)),
-			}));
-
-			setTopRoutesData(topRoutesData);
+			setTopRoutesData(filledData);
 			setLoading(false);
 		};
 
 		fetchData();
 	}, [startDate, endDate]);
 
+	// Handle loading state
 	if (loading) {
 		return <p className="text-center mt-5">Loading...</p>;
 	}
 
+	// Prepare chart data
 	const chartData = {
-		labels: Array.from(
-			new Set(
-				topRoutesData.flatMap((route) =>
-					route.monthlyData.map((data) => data.monthYear)
-				)
-			)
-		).sort(),
+		labels: topRoutesData[0]?.monthlyData.map((data) => data.monthYear) || [],
 		datasets: topRoutesData.map((routeData, index) => ({
 			label: `Route ${routeData.route}`,
 			data: routeData.monthlyData.map((data) => data.count),
 			borderColor: colorPalette[index % colorPalette.length],
-			backgroundColor: colorPalette[index % colorPalette.length].replace(
-				"1)",
-				"0.2)"
-			),
+			backgroundColor: colorPalette[index % colorPalette.length].replace("1)", "0.2)"),
 			fill: false,
 		})),
 	};
 
+	// Chart options
 	const chartOptions = {
 		scales: {
-			x: { type: "time" as const },
+			x: {
+				type: "category" as const,
+				title: {
+					display: true,
+					text: "Month-Year",
+				},
+			},
 			y: {
 				title: {
 					display: true,
@@ -131,7 +98,7 @@ const TopRoutesChart = () => {
 		plugins: {
 			legend: {
 				display: true,
-				position: "right" as const, // Set to a valid position type
+				position: "right" as const,
 				labels: {
 					usePointStyle: true,
 					color: "#333",

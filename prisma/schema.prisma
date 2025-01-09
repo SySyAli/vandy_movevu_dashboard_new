@@ -7,40 +7,41 @@
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   // Uses connection pooling
-  url = env("POSTGRES_PRISMA_URL")
+  url       = env("POSTGRES_PRISMA_URL")
   // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
   // or you'll have dangling databases from migrations
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model MonthlySwipes {
-  id            Int    @id @default(autoincrement())
-  monthYear     String @map("month_year")
-  historical    Int
-  quickticket   Int
+  id          Int    @id @default(autoincrement())
+  monthYear   String @unique @map("month_year") // Make monthYear unique
+  historical  Int
+  quickticket Int
 
   @@map("monthly_swipes")
 }
 
 model TopRoutes {
-  id            Int    @id @default(autoincrement())
-  route         Int
-  monthYear     String @map("month_year")
-  historical    Int
-  quickticket   Int
+  id          Int    @id @default(autoincrement())
+  route       Int
+  monthYear   String @map("month_year")
+  historical  Int
+  quickticket Int
 
+  @@unique([route, monthYear]) // Composite unique key
   @@map("top_routes")
 }
 
 model UniqueUsers {
-  id            Int    @id @default(autoincrement())
-  monthYear     String @map("month_year")
-  historical    Int
-  quickticket   Int
+  id          Int    @id @default(autoincrement())
+  monthYear   String @unique @map("month_year") // Make monthYear unique
+  historical  Int
+  quickticket Int
 
   @@map("unique_users")
 }

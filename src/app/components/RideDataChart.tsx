@@ -1,4 +1,4 @@
-// RideDataChart.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
@@ -21,6 +21,22 @@ const RideDataChart = () => {
 	const [startDate, setStartDate] = useState(new Date("2016-12-31"));
 	const [endDate, setEndDate] = useState(new Date("2024-12-30"));
 
+	// Generate all months between start and end date
+	const generateMonthRange = (start: Date, end: Date) => {
+		const months = [];
+		const current = new Date(start);
+
+		while (current <= end) {
+			const year = current.getFullYear();
+			const month = (current.getMonth() + 1).toString().padStart(2, "0");
+			months.push(`${year}-${month}`);
+			current.setMonth(current.getMonth() + 1);
+		}
+
+		return months;
+	};
+
+	// Fetch data
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
@@ -29,31 +45,85 @@ const RideDataChart = () => {
 			const url = `/api/monthlySwipes?start=${formattedStartDate}&end=${formattedEndDate}`;
 			const res = await fetch(url);
 			const data = await res.json();
-			setRideData(data);
+
+			// Generate all months between start and end dates
+			const months = generateMonthRange(startDate, endDate);
+
+			// Create a filled dataset with missing months defaulted to 0
+			const filledData: Record<string, RideData> = {};
+			months.forEach((month) => {
+				const match = data.find((entry: any) => entry.monthYear === month);
+				filledData[month] = match
+					? {
+							historical: match.historical || 0,
+							quickticket: match.quickticket || 0,
+						}
+					: { historical: 0, quickticket: 0 };
+			});
+
+			setRideData(filledData);
 			setLoading(false);
 		};
 
 		fetchData();
 	}, [startDate, endDate]);
-	// TODO: FIX THIS
+
+	// Handle loading state
 	if (loading) {
 		return <p className="text-center mt-5">Loading...</p>;
 	}
 
+	// Sort labels by year and month
+	const sortedLabels = Object.keys(rideData).sort((a, b) => {
+		const [yearA, monthA] = a.split("-").map(Number);
+		const [yearB, monthB] = b.split("-").map(Number);
+		return yearA !== yearB ? yearA - yearB : monthA - monthB;
+	});
+
+	// Prepare chart data
 	const chartData = {
-		labels: Object.keys(rideData).sort(),
+		labels: sortedLabels,
 		datasets: [
 			{
 				label: "Commodore Card Rides",
-				data: Object.values(rideData).map((data) => data.historical),
+				data: sortedLabels.map((label) => rideData[label]?.historical || 0),
 				backgroundColor: "rgba(207,174,112, 0.8)",
+				stack: "rides", // Ensure stacking
 			},
 			{
 				label: "QuickTicket Rides",
-				data: Object.values(rideData).map((data) => data.quickticket),
+				data: sortedLabels.map((label) => rideData[label]?.quickticket || 0),
 				backgroundColor: "rgba(94,73,148,255)",
+				stack: "rides", // Ensure stacking
 			},
 		],
+	};
+
+	// Chart options
+	const chartOptions = {
+		responsive: true,
+		scales: {
+			x: {
+				stacked: true,
+				title: {
+					display: true,
+					text: "Month-Year",
+				},
+			},
+			y: {
+				stacked: true,
+				title: {
+					display: true,
+					text: "Number of Rides",
+				},
+			},
+		},
+		plugins: {
+			legend: {
+				display: true,
+				position: "top" as const,
+			},
+		},
 	};
 
 	return (
@@ -81,7 +151,7 @@ const RideDataChart = () => {
 					showMonthYearPicker
 				/>
 			</div>
-			<Bar data={chartData} options={{ scales: { x: { stacked: true }, y: { stacked: true } } }} />
+			<Bar data={chartData} options={chartOptions} />
 		</div>
 	);
 };
