@@ -4,13 +4,42 @@ import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import "chartjs-adapter-date-fns";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import ChartContainer from "./ChartContainer";
+import DateRangePicker from "./DateRangePicker";
+import LoadingSpinner from "./LoadingSpinner";
 
 Chart.register(...registerables);
 
+const chartOptions = {
+	responsive: true,
+	scales: {
+		x: {
+			stacked: true,
+			title: {
+				display: true,
+				text: "Month-Year",
+			},
+		},
+		y: {
+			stacked: true,
+			title: {
+				display: true,
+				text: "Number of Users",
+			},
+		},
+	},
+	plugins: {
+		legend: {
+			display: true,
+			position: "top" as const,
+		},
+	},
+};
+
 const UniqueUsersChart = () => {
-	const [uniqueUsersData, setUniqueUsersData] = useState<{ monthYear: string; historical: number; quickticket: number }[]>([]);
+	const [uniqueUsersData, setUniqueUsersData] = useState<
+		{ monthYear: string; historical: number; quickticket: number }[]
+	>([]);
 	const [loading, setLoading] = useState(true);
 	const [startDate, setStartDate] = useState(new Date("2016-12-31"));
 	const [endDate, setEndDate] = useState(new Date("2024-12-30"));
@@ -31,7 +60,7 @@ const UniqueUsersChart = () => {
 	}, [startDate, endDate]);
 
 	if (loading) {
-		return <p className="text-center mt-5">Loading...</p>;
+		return <LoadingSpinner />;
 	}
 
 	const chartData = {
@@ -40,56 +69,42 @@ const UniqueUsersChart = () => {
 			{
 				label: "Commodore Card Unique Users",
 				data: uniqueUsersData.map((item) => item.historical),
-				backgroundColor: "rgba(75, 192, 192, 0.8)",
+				backgroundColor: "rgba(207,174,112, 0.8)",
+				stack: "users",
 			},
 			{
 				label: "QuickTicket Unique Users",
 				data: uniqueUsersData.map((item) => item.quickticket),
-				backgroundColor: "rgba(153, 102, 255, 0.8)",
+				backgroundColor: "rgba(94,73,148,255)",
+				stack: "users",
 			},
 		],
 	};
 
 	return (
-		<div>
-			<div className="flex flex-col md:flex-row justify-center items-end space-x-2 mb-4">
-				<DatePicker
-					className="datepicker_custom"
-					selected={startDate}
-					onChange={(date) => date && setStartDate(date)}
-					selectsStart
+		<ChartContainer
+			title="User Activity Trends"
+			description="Monthly active unique users by card type"
+		>
+			<div className="flex flex-col h-full gap-4">
+				<DateRangePicker
 					startDate={startDate}
 					endDate={endDate}
-					dateFormat="MM/yyyy"
-					showMonthYearPicker
+					onStartDateChange={setStartDate}
+					onEndDateChange={setEndDate}
 				/>
-				<DatePicker
-					className="datepicker_custom"
-					selected={endDate}
-					onChange={(date) => date && setEndDate(date)}
-					selectsEnd
-					startDate={startDate}
-					endDate={endDate}
-					minDate={startDate}
-					dateFormat="MM/yyyy"
-					showMonthYearPicker
-				/>
+				<div className="flex-1 min-h-0">
+					<Bar
+						data={chartData}
+						options={{
+							...chartOptions,
+							maintainAspectRatio: false,
+							responsive: true,
+						}}
+					/>
+				</div>
 			</div>
-			<Bar 
-				data={chartData} 
-				options={{ 
-					scales: { 
-						x: { 
-							stacked: true,
-							type: "category",
-						}, 
-						y: { 
-							stacked: true 
-						} 
-					} 
-				}} 
-			/>
-		</div>
+		</ChartContainer>
 	);
 };
 

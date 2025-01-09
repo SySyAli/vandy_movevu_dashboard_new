@@ -24,10 +24,14 @@ const Dashboard = () => {
 	};
 
 	return (
-		<div className="container mx-auto px-4">
+		<div className="min-h-screen bg-gray-50">
 			<Header />
-			<Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-			<div className="tab-content mt-4">{renderTabContent()}</div>
+			<div className="container mx-auto px-4 py-6">
+				<div className="bg-white rounded-lg shadow-lg p-6">
+					<Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+					<div className="mt-4 h-[calc(100vh-240px)]">{renderTabContent()}</div>
+				</div>
+			</div>
 		</div>
 	);
 };

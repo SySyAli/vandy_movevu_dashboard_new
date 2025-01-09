@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import ChartContainer from "./ChartContainer";
+import DateRangePicker from "./DateRangePicker";
+import LoadingSpinner from "./LoadingSpinner";
 
 Chart.register(...registerables);
 
@@ -38,7 +39,9 @@ const TopRoutesChart = () => {
 			// Create a combined map of all monthYears
 			const allMonths = new Set<string>();
 			data.forEach((route: any) => {
-				route.monthlyData.forEach((entry: any) => allMonths.add(entry.monthYear));
+				route.monthlyData.forEach((entry: any) =>
+					allMonths.add(entry.monthYear)
+				);
 			});
 			const sortedMonths = Array.from(allMonths).sort();
 
@@ -63,7 +66,7 @@ const TopRoutesChart = () => {
 
 	// Handle loading state
 	if (loading) {
-		return <p className="text-center mt-5">Loading...</p>;
+		return <LoadingSpinner />;
 	}
 
 	// Prepare chart data
@@ -73,7 +76,10 @@ const TopRoutesChart = () => {
 			label: `Route ${routeData.route}`,
 			data: routeData.monthlyData.map((data) => data.count),
 			borderColor: colorPalette[index % colorPalette.length],
-			backgroundColor: colorPalette[index % colorPalette.length].replace("1)", "0.2)"),
+			backgroundColor: colorPalette[index % colorPalette.length].replace(
+				"1)",
+				"0.2)"
+			),
 			fill: false,
 		})),
 	};
@@ -111,32 +117,29 @@ const TopRoutesChart = () => {
 	};
 
 	return (
-		<div>
-			<div className="flex flex-col md:flex-row justify-center items-end space-x-2 mb-4">
-				<DatePicker
-					className="datepicker_custom"
-					selected={startDate}
-					onChange={(date) => date && setStartDate(date)}
-					selectsStart
+		<ChartContainer
+			title="Popular Routes Analysis"
+			description="Top 5 used bus routes over time"
+		>
+			<div className="flex flex-col h-full gap-4">
+				<DateRangePicker
 					startDate={startDate}
 					endDate={endDate}
-					dateFormat="MM/yyyy"
-					showMonthYearPicker
+					onStartDateChange={setStartDate}
+					onEndDateChange={setEndDate}
 				/>
-				<DatePicker
-					className="datepicker_custom"
-					selected={endDate}
-					onChange={(date) => date && setEndDate(date)}
-					selectsEnd
-					startDate={startDate}
-					endDate={endDate}
-					minDate={startDate}
-					dateFormat="MM/yyyy"
-					showMonthYearPicker
-				/>
+				<div className="flex-1 min-h-0">
+					<Line
+						data={chartData}
+						options={{
+							...chartOptions,
+							maintainAspectRatio: false,
+							responsive: true,
+						}}
+					/>
+				</div>
 			</div>
-			<Line data={chartData} options={chartOptions} />
-		</div>
+		</ChartContainer>
 	);
 };
 

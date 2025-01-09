@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 import "./DatePickerStyles.css";
+import DateRangePicker from "./DateRangePicker";
+import ChartContainer from "./ChartContainer";
+import LoadingSpinner from "./LoadingSpinner";
 
 Chart.register(...registerables);
 
@@ -70,7 +71,7 @@ const RideDataChart = () => {
 
 	// Handle loading state
 	if (loading) {
-		return <p className="text-center mt-5">Loading...</p>;
+		return <LoadingSpinner />;
 	}
 
 	// Sort labels by year and month
@@ -127,32 +128,29 @@ const RideDataChart = () => {
 	};
 
 	return (
-		<div>
-			<div className="flex flex-col md:flex-row justify-center items-end space-x-2 mb-4">
-				<DatePicker
-					className="datepicker_custom"
-					selected={startDate}
-					onChange={(date) => date && setStartDate(date)}
-					selectsStart
+		<ChartContainer
+			title="Monthly Ride Distribution"
+			description="Comparison of Commodore Card and QuickTicket usage patterns over time"
+		>
+			<div className="flex flex-col h-full gap-4">
+				<DateRangePicker
 					startDate={startDate}
 					endDate={endDate}
-					dateFormat="MM/yyyy"
-					showMonthYearPicker
+					onStartDateChange={setStartDate}
+					onEndDateChange={setEndDate}
 				/>
-				<DatePicker
-					className="datepicker_custom"
-					selected={endDate}
-					onChange={(date) => date && setEndDate(date)}
-					selectsEnd
-					startDate={startDate}
-					endDate={endDate}
-					minDate={startDate}
-					dateFormat="MM/yyyy"
-					showMonthYearPicker
-				/>
+				<div className="flex-1 min-h-0">
+					<Bar
+						data={chartData}
+						options={{
+							...chartOptions,
+							maintainAspectRatio: false,
+							responsive: true,
+						}}
+					/>
+				</div>
 			</div>
-			<Bar data={chartData} options={chartOptions} />
-		</div>
+		</ChartContainer>
 	);
 };
 
